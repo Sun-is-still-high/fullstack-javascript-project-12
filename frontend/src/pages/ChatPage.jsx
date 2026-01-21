@@ -3,9 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Container, Navbar, Button, Row, Col, Spinner } from 'react-bootstrap';
 import { useAuth } from '../contexts/AuthContext';
-import { setChannels, setCurrentChannel } from '../store/slices/channelsSlice';
-import { setMessages } from '../store/slices/messagesSlice';
+import { setChannels, setCurrentChannel, addChannel, removeChannel, renameChannel } from '../store/slices/channelsSlice';
+import { setMessages, addMessage } from '../store/slices/messagesSlice';
 import { fetchInitialData, setAuthToken } from '../services/api';
+import { initSocket, disconnectSocket } from '../services/socket';
 import Channels from '../components/Channels';
 import Messages from '../components/Messages';
 import MessageForm from '../components/MessageForm';
@@ -17,7 +18,7 @@ const ChatPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const { channels, currentChannelId } = useSelector((state) => state.channels);
+  const { channels = [], currentChannelId } = useSelector((state) => state.channels);
   const currentChannel = channels.find((ch) => ch.id === currentChannelId);
 
   useEffect(() => {
@@ -26,16 +27,24 @@ const ChatPage = () => {
         setAuthToken(auth.user.token);
         const data = await fetchInitialData();
 
-        dispatch(setChannels(data.channels));
-        dispatch(setMessages(data.messages));
+        const channels = data.channels || [];
+        const messages = data.messages || [];
 
-        if (data.channels.length > 0) {
-          dispatch(setCurrentChannel(data.currentChannelId || data.channels[0].id));
+        dispatch(setChannels(channels));
+        dispatch(setMessages(messages));
+
+        if (channels.length > 0) {
+          dispatch(setCurrentChannel(data.currentChannelId || channels[0].id));
         }
 
         setLoading(false);
       } catch (err) {
         console.error('Failed to load data:', err);
+        console.error('Error details:', {
+          message: err.message,
+          response: err.response?.data,
+          status: err.response?.status
+        });
         setError('Не удалось загрузить данные');
         setLoading(false);
 
@@ -48,6 +57,32 @@ const ChatPage = () => {
 
     loadData();
   }, [auth, dispatch, navigate]);
+
+  useEffect(() => {
+    if (loading) return;
+
+    const socket = initSocket();
+
+    socket.on('newMessage', (message) => {
+      dispatch(addMessage(message));
+    });
+
+    socket.on('newChannel', (channel) => {
+      dispatch(addChannel(channel));
+    });
+
+    socket.on('removeChannel', ({ id }) => {
+      dispatch(removeChannel(id));
+    });
+
+    socket.on('renameChannel', ({ id, name }) => {
+      dispatch(renameChannel({ id, name }));
+    });
+
+    return () => {
+      disconnectSocket();
+    };
+  }, [loading, dispatch]);
 
   const handleLogout = () => {
     auth.logOut();
