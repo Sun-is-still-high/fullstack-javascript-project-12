@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Container, Navbar, Button, Row, Col, Spinner } from 'react-bootstrap';
+import { Container, Row, Col, Spinner, Button } from 'react-bootstrap';
 import { useAuth } from '../contexts/AuthContext';
 import { setChannels, setCurrentChannel, addChannel, removeChannel, renameChannel } from '../store/slices/channelsSlice';
 import { setMessages, addMessage } from '../store/slices/messagesSlice';
 import { fetchInitialData, setAuthToken } from '../services/api';
 import { initSocket, disconnectSocket } from '../services/socket';
+import Header from '../components/Header';
 import Channels from '../components/Channels';
 import Messages from '../components/Messages';
 import MessageForm from '../components/MessageForm';
@@ -89,11 +90,6 @@ const ChatPage = () => {
     };
   }, [loading, dispatch]);
 
-  const handleLogout = () => {
-    auth.logOut();
-    navigate('/login');
-  };
-
   if (loading) {
     return (
       <div className="d-flex justify-content-center align-items-center h-100">
@@ -119,14 +115,7 @@ const ChatPage = () => {
 
   return (
     <div className="d-flex flex-column h-100">
-      <Navbar bg="light" expand="lg" className="shadow-sm">
-        <Container fluid>
-          <Navbar.Brand>Hexlet Chat</Navbar.Brand>
-          <Button variant="primary" onClick={handleLogout}>
-            Выйти
-          </Button>
-        </Container>
-      </Navbar>
+      <Header />
       <Container fluid className="h-100 my-4 overflow-hidden rounded shadow">
         <Row className="h-100 bg-white flex-md-row">
           <Col xs={4} md={2} className="border-end px-0 bg-light flex-column h-100 d-flex">

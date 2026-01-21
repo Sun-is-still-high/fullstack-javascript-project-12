@@ -4,6 +4,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
 import ChatPage from './pages/ChatPage';
 import LoginPage from './pages/LoginPage';
+import SignupPage from './pages/SignupPage';
 import NotFoundPage from './pages/NotFoundPage';
 import store from './store';
 
@@ -22,6 +23,7 @@ function App() {
               }
             />
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignupPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </BrowserRouter>
