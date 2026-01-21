@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 import { Modal, Form, Button } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -37,9 +38,11 @@ const AddChannelModal = () => {
         console.log('Channel created via API:', newChannel);
         dispatch(addChannel(newChannel));
         dispatch(setCurrentChannel(newChannel.id));
+        toast.success(t('notifications.channelCreated'));
         dispatch(closeModal());
       } catch (error) {
         console.error('Failed to create channel:', error);
+        toast.error(t('notifications.networkError'));
         formik.setErrors({ name: t('modals.add.error') });
       }
     },

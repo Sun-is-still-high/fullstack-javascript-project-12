@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 import { Modal, Form, Button } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -39,9 +40,11 @@ const RenameChannelModal = () => {
         await updateChannel(extra.id, { name: values.name });
         console.log('Channel renamed via API:', { id: extra.id, name: values.name });
         dispatch(renameChannel({ id: extra.id, name: values.name }));
+        toast.success(t('notifications.channelRenamed'));
         dispatch(closeModal());
       } catch (error) {
         console.error('Failed to rename channel:', error);
+        toast.error(t('notifications.networkError'));
         formik.setErrors({ name: t('modals.rename.error') });
       }
     },

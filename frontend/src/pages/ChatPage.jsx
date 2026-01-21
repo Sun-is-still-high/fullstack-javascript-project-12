@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 import { Container, Row, Col, Spinner, Button } from 'react-bootstrap';
 import { useAuth } from '../contexts/AuthContext';
 import { setChannels, setCurrentChannel, addChannel, removeChannel, renameChannel } from '../store/slices/channelsSlice';
@@ -50,6 +51,7 @@ const ChatPage = () => {
           status: err.response?.status
         });
         setError(t('chat.loadError'));
+        toast.error(t('notifications.dataLoadError'));
         setLoading(false);
 
         if (err.response?.status === 401) {

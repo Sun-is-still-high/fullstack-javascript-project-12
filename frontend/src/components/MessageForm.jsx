@@ -1,7 +1,8 @@
 import { useState, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { Form, InputGroup, Button, Toast, ToastContainer } from 'react-bootstrap';
+import { toast } from 'react-toastify';
+import { Form, InputGroup, Button } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import { sendMessage } from '../services/api';
 import { addMessage } from '../store/slices/messagesSlice';
@@ -13,8 +14,6 @@ const MessageForm = () => {
   const auth = useAuth();
   const { currentChannelId } = useSelector((state) => state.channels);
   const [sending, setSending] = useState(false);
-  const [showError, setShowError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
   const inputRef = useRef(null);
 
   const formik = useFormik({
@@ -25,7 +24,6 @@ const MessageForm = () => {
       if (!values.body.trim() || !currentChannelId) return;
 
       setSending(true);
-      setShowError(false);
 
       try {
         const message = {
@@ -43,14 +41,12 @@ const MessageForm = () => {
         console.error('Failed to send message:', error);
 
         if (error.response) {
-          setErrorMessage(t('messages.errors.statusError', { status: error.response.status }));
+          toast.error(t('messages.errors.statusError', { status: error.response.status }));
         } else if (error.request) {
-          setErrorMessage(t('messages.errors.networkError'));
+          toast.error(t('messages.errors.networkError'));
         } else {
-          setErrorMessage(t('messages.errors.genericError'));
+          toast.error(t('messages.errors.genericError'));
         }
-
-        setShowError(true);
       } finally {
         setSending(false);
       }
@@ -93,21 +89,6 @@ const MessageForm = () => {
           </Button>
         </InputGroup>
       </Form>
-
-      <ToastContainer position="top-end" className="p-3">
-        <Toast
-          show={showError}
-          onClose={() => setShowError(false)}
-          delay={5000}
-          autohide
-          bg="danger"
-        >
-          <Toast.Header>
-            <strong className="me-auto">{t('messages.errors.sendError')}</strong>
-          </Toast.Header>
-          <Toast.Body className="text-white">{errorMessage}</Toast.Body>
-        </Toast>
-      </ToastContainer>
     </>
   );
 };

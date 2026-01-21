@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 import { Modal, Button } from 'react-bootstrap';
 import { closeModal } from '../../store/slices/modalsSlice';
 import { removeChannel } from '../../store/slices/channelsSlice';
@@ -18,9 +19,11 @@ const RemoveChannelModal = () => {
       await deleteChannel(extra.id);
       console.log('Channel deleted via API:', extra.id);
       dispatch(removeChannel(extra.id));
+      toast.success(t('notifications.channelRemoved'));
       dispatch(closeModal());
     } catch (error) {
       console.error('Failed to delete channel:', error);
+      toast.error(t('notifications.networkError'));
       setIsSubmitting(false);
     }
   };

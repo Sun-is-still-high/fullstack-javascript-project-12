@@ -98,6 +98,13 @@ const resources = {
         message: 'К сожалению, запрашиваемая страница не существует.',
         backHome: 'Вернуться на главную',
       },
+      notifications: {
+        channelCreated: 'Канал создан',
+        channelRenamed: 'Канал переименован',
+        channelRemoved: 'Канал удалён',
+        networkError: 'Ошибка соединения',
+        dataLoadError: 'Не удалось загрузить данные',
+      },
     },
   },
 };
