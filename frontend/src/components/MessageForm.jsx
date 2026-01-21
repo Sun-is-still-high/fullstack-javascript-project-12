@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { Form, InputGroup, Button } from 'react-bootstrap';
 import { useFormik } from 'formik';
+import filter from 'leo-profanity';
 import { sendMessage } from '../services/api';
 import { addMessage } from '../store/slices/messagesSlice';
 import { useAuth } from '../contexts/AuthContext';
@@ -27,7 +28,7 @@ const MessageForm = () => {
 
       try {
         const message = {
-          body: values.body,
+          body: filter.clean(values.body),
           channelId: currentChannelId,
           username: auth.user.username,
         };

@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import { Modal, Form, Button } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
+import filter from 'leo-profanity';
 import { closeModal } from '../../store/slices/modalsSlice';
 import { setCurrentChannel, addChannel } from '../../store/slices/channelsSlice';
 import { createChannel } from '../../services/api';
@@ -34,7 +35,7 @@ const AddChannelModal = () => {
     validationSchema,
     onSubmit: async (values) => {
       try {
-        const newChannel = await createChannel({ name: values.name });
+        const newChannel = await createChannel({ name: filter.clean(values.name) });
         console.log('Channel created via API:', newChannel);
         dispatch(addChannel(newChannel));
         dispatch(setCurrentChannel(newChannel.id));

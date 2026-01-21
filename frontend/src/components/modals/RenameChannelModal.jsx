@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import { Modal, Form, Button } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
+import filter from 'leo-profanity';
 import { closeModal } from '../../store/slices/modalsSlice';
 import { renameChannel } from '../../store/slices/channelsSlice';
 import { updateChannel } from '../../services/api';
@@ -37,9 +38,10 @@ const RenameChannelModal = () => {
     validationSchema,
     onSubmit: async (values) => {
       try {
-        await updateChannel(extra.id, { name: values.name });
-        console.log('Channel renamed via API:', { id: extra.id, name: values.name });
-        dispatch(renameChannel({ id: extra.id, name: values.name }));
+        const cleanName = filter.clean(values.name);
+        await updateChannel(extra.id, { name: cleanName });
+        console.log('Channel renamed via API:', { id: extra.id, name: cleanName });
+        dispatch(renameChannel({ id: extra.id, name: cleanName }));
         toast.success(t('notifications.channelRenamed'));
         dispatch(closeModal());
       } catch (error) {
