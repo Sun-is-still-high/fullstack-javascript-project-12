@@ -10,6 +10,7 @@ import { initSocket, disconnectSocket } from '../services/socket';
 import Channels from '../components/Channels';
 import Messages from '../components/Messages';
 import MessageForm from '../components/MessageForm';
+import ModalManager from '../components/ModalManager';
 
 const ChatPage = () => {
   const navigate = useNavigate();
@@ -64,18 +65,22 @@ const ChatPage = () => {
     const socket = initSocket();
 
     socket.on('newMessage', (message) => {
+      console.log('WebSocket: newMessage received:', message);
       dispatch(addMessage(message));
     });
 
     socket.on('newChannel', (channel) => {
+      console.log('WebSocket: newChannel received:', channel);
       dispatch(addChannel(channel));
     });
 
     socket.on('removeChannel', ({ id }) => {
+      console.log('WebSocket: removeChannel received:', id);
       dispatch(removeChannel(id));
     });
 
     socket.on('renameChannel', ({ id, name }) => {
+      console.log('WebSocket: renameChannel received:', { id, name });
       dispatch(renameChannel({ id, name }));
     });
 
@@ -145,6 +150,7 @@ const ChatPage = () => {
           </Col>
         </Row>
       </Container>
+      <ModalManager />
     </div>
   );
 };

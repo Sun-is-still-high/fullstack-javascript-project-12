@@ -1,11 +1,13 @@
 import { useState, useRef } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Form, InputGroup, Button, Toast, ToastContainer } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import { sendMessage } from '../services/api';
+import { addMessage } from '../store/slices/messagesSlice';
 import { useAuth } from '../contexts/AuthContext';
 
 const MessageForm = () => {
+  const dispatch = useDispatch();
   const auth = useAuth();
   const { currentChannelId } = useSelector((state) => state.channels);
   const [sending, setSending] = useState(false);
@@ -30,7 +32,9 @@ const MessageForm = () => {
           username: auth.user.username,
         };
 
-        await sendMessage(message);
+        const sentMessage = await sendMessage(message);
+        console.log('Message sent via API:', sentMessage);
+        dispatch(addMessage(sentMessage));
         resetForm();
         inputRef.current?.focus();
       } catch (error) {

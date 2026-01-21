@@ -1,6 +1,7 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { Nav, Button, ButtonGroup } from 'react-bootstrap';
+import { Nav, Button, ButtonGroup, Dropdown } from 'react-bootstrap';
 import { setCurrentChannel } from '../store/slices/channelsSlice';
+import { openModal } from '../store/slices/modalsSlice';
 
 const Channels = () => {
   const dispatch = useDispatch();
@@ -10,11 +11,34 @@ const Channels = () => {
     dispatch(setCurrentChannel(channelId));
   };
 
+  const handleAddChannel = () => {
+    dispatch(openModal({ type: 'addChannel' }));
+  };
+
+  const handleRename = (channel) => {
+    dispatch(openModal({
+      type: 'renameChannel',
+      extra: { id: channel.id, name: channel.name }
+    }));
+  };
+
+  const handleRemove = (channel) => {
+    dispatch(openModal({
+      type: 'removeChannel',
+      extra: { id: channel.id }
+    }));
+  };
+
   return (
     <>
       <div className="d-flex mt-1 justify-content-between mb-2 ps-4 pe-2 p-4">
         <b>Каналы</b>
-        <Button variant="group-vertical" size="sm" className="p-0 text-primary">
+        <Button
+          variant="group-vertical"
+          size="sm"
+          className="p-0 text-primary"
+          onClick={handleAddChannel}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 16 16"
@@ -31,7 +55,7 @@ const Channels = () => {
       <Nav variant="pills" className="flex-column px-2 mb-3 overflow-auto h-100 d-block">
         {channels.map((channel) => (
           <Nav.Item key={channel.id} className="w-100">
-            <ButtonGroup className="d-flex">
+            <Dropdown as={ButtonGroup} className="d-flex">
               <Button
                 variant={currentChannelId === channel.id ? 'secondary' : ''}
                 className="w-100 rounded-0 text-start text-truncate"
@@ -40,7 +64,26 @@ const Channels = () => {
                 <span className="me-1">#</span>
                 {channel.name}
               </Button>
-            </ButtonGroup>
+              {channel.removable && (
+                <>
+                  <Dropdown.Toggle
+                    split
+                    variant={currentChannelId === channel.id ? 'secondary' : ''}
+                    className="flex-grow-0"
+                  >
+                    <span className="visually-hidden">Управление каналом</span>
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu>
+                    <Dropdown.Item onClick={() => handleRemove(channel)}>
+                      Удалить
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={() => handleRename(channel)}>
+                      Переименовать
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </>
+              )}
+            </Dropdown>
           </Nav.Item>
         ))}
       </Nav>

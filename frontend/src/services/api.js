@@ -22,4 +22,19 @@ export const sendMessage = async (message) => {
   return response.data;
 };
 
+export const createChannel = async (channel) => {
+  const response = await api.post('/channels', channel);
+  return response.data;
+};
+
+export const updateChannel = async (id, channel) => {
+  const response = await api.patch(`/channels/${id}`, channel);
+  return response.data;
+};
+
+export const deleteChannel = async (id) => {
+  const response = await api.delete(`/channels/${id}`);
+  return response.data;
+};
+
 export default api;
