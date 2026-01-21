@@ -1,8 +1,21 @@
 import axios from 'axios';
+import rollbar from '../rollbar';
 
 const api = axios.create({
   baseURL: '/api/v1',
 });
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    rollbar.error('API Error', error, {
+      url: error.config?.url,
+      method: error.config?.method,
+      status: error.response?.status,
+    });
+    return Promise.reject(error);
+  }
+);
 
 export const setAuthToken = (token) => {
   if (token) {
