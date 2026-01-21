@@ -1,37 +1,114 @@
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Container, Navbar, Button } from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
+import { Container, Navbar, Button, Row, Col, Spinner } from 'react-bootstrap';
 import { useAuth } from '../contexts/AuthContext';
+import { setChannels, setCurrentChannel } from '../store/slices/channelsSlice';
+import { setMessages } from '../store/slices/messagesSlice';
+import { fetchInitialData, setAuthToken } from '../services/api';
+import Channels from '../components/Channels';
+import Messages from '../components/Messages';
+import MessageForm from '../components/MessageForm';
 
 const ChatPage = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const auth = useAuth();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const { channels, currentChannelId } = useSelector((state) => state.channels);
+  const currentChannel = channels.find((ch) => ch.id === currentChannelId);
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        setAuthToken(auth.user.token);
+        const data = await fetchInitialData();
+
+        dispatch(setChannels(data.channels));
+        dispatch(setMessages(data.messages));
+
+        if (data.channels.length > 0) {
+          dispatch(setCurrentChannel(data.currentChannelId || data.channels[0].id));
+        }
+
+        setLoading(false);
+      } catch (err) {
+        console.error('Failed to load data:', err);
+        setError('Не удалось загрузить данные');
+        setLoading(false);
+
+        if (err.response?.status === 401) {
+          auth.logOut();
+          navigate('/login');
+        }
+      }
+    };
+
+    loadData();
+  }, [auth, dispatch, navigate]);
 
   const handleLogout = () => {
     auth.logOut();
     navigate('/login');
   };
 
+  if (loading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center h-100">
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Загрузка...</span>
+        </Spinner>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="d-flex justify-content-center align-items-center h-100">
+        <div className="text-center">
+          <h3>{error}</h3>
+          <Button variant="primary" onClick={() => window.location.reload()}>
+            Попробовать снова
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="d-flex flex-column h-100">
       <Navbar bg="light" expand="lg" className="shadow-sm">
-        <Container>
+        <Container fluid>
           <Navbar.Brand>Hexlet Chat</Navbar.Brand>
           <Button variant="primary" onClick={handleLogout}>
             Выйти
           </Button>
         </Container>
       </Navbar>
-      <Container className="my-4 overflow-hidden rounded shadow">
-        <div className="row h-100 bg-white flex-md-row">
-          <div className="col-12">
+      <Container fluid className="h-100 my-4 overflow-hidden rounded shadow">
+        <Row className="h-100 bg-white flex-md-row">
+          <Col xs={4} md={2} className="border-end px-0 bg-light flex-column h-100 d-flex">
+            <Channels />
+          </Col>
+          <Col className="p-0 h-100">
             <div className="d-flex flex-column h-100">
-              <div className="chat-messages overflow-auto px-5">
-                <h1>Добро пожаловать в чат!</h1>
-                <p>Привет, {auth.user?.username}!</p>
+              <div className="bg-light mb-4 p-3 shadow-sm small">
+                <p className="m-0">
+                  <b># {currentChannel?.name || 'Выберите канал'}</b>
+                </p>
+                <span className="text-muted">
+                  {currentChannel ? 'Описание канала' : ''}
+                </span>
+              </div>
+              <Messages />
+              <div className="mt-auto px-5 py-3">
+                <MessageForm />
               </div>
             </div>
-          </div>
-        </div>
+          </Col>
+        </Row>
       </Container>
     </div>
   );
