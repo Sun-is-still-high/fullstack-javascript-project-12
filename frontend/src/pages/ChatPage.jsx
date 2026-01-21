@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { Container, Row, Col, Spinner, Button } from 'react-bootstrap';
 import { useAuth } from '../contexts/AuthContext';
 import { setChannels, setCurrentChannel, addChannel, removeChannel, renameChannel } from '../store/slices/channelsSlice';
@@ -14,6 +15,7 @@ import MessageForm from '../components/MessageForm';
 import ModalManager from '../components/ModalManager';
 
 const ChatPage = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const auth = useAuth();
@@ -47,7 +49,7 @@ const ChatPage = () => {
           response: err.response?.data,
           status: err.response?.status
         });
-        setError('Не удалось загрузить данные');
+        setError(t('chat.loadError'));
         setLoading(false);
 
         if (err.response?.status === 401) {
@@ -94,7 +96,7 @@ const ChatPage = () => {
     return (
       <div className="d-flex justify-content-center align-items-center h-100">
         <Spinner animation="border" role="status">
-          <span className="visually-hidden">Загрузка...</span>
+          <span className="visually-hidden">{t('chat.loading')}</span>
         </Spinner>
       </div>
     );
@@ -106,7 +108,7 @@ const ChatPage = () => {
         <div className="text-center">
           <h3>{error}</h3>
           <Button variant="primary" onClick={() => window.location.reload()}>
-            Попробовать снова
+            {t('chat.retry')}
           </Button>
         </div>
       </div>
@@ -125,10 +127,10 @@ const ChatPage = () => {
             <div className="d-flex flex-column h-100">
               <div className="bg-light mb-4 p-3 shadow-sm small">
                 <p className="m-0">
-                  <b># {currentChannel?.name || 'Выберите канал'}</b>
+                  <b># {currentChannel?.name || t('chat.selectChannel')}</b>
                 </p>
                 <span className="text-muted">
-                  {currentChannel ? 'Описание канала' : ''}
+                  {currentChannel ? t('chat.channelDescription') : ''}
                 </span>
               </div>
               <Messages />

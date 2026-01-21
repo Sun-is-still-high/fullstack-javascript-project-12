@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Container, Card, Form, Button, Row, Col } from 'react-bootstrap';
 import { useFormik } from 'formik';
+import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
 import Header from '../components/Header';
 
 const SignupPage = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const auth = useAuth();
   const [signupError, setSignupError] = useState(null);
@@ -15,17 +17,17 @@ const SignupPage = () => {
   const validationSchema = yup.object({
     username: yup
       .string()
-      .min(3, 'От 3 до 20 символов')
-      .max(20, 'От 3 до 20 символов')
-      .required('Обязательное поле'),
+      .min(3, t('validation.usernameLength'))
+      .max(20, t('validation.usernameLength'))
+      .required(t('validation.required')),
     password: yup
       .string()
-      .min(6, 'Не менее 6 символов')
-      .required('Обязательное поле'),
+      .min(6, t('validation.passwordLength'))
+      .required(t('validation.required')),
     confirmPassword: yup
       .string()
-      .oneOf([yup.ref('password'), null], 'Пароли должны совпадать')
-      .required('Обязательное поле'),
+      .oneOf([yup.ref('password'), null], t('validation.passwordsMustMatch'))
+      .required(t('validation.required')),
   });
 
   const formik = useFormik({
@@ -48,9 +50,9 @@ const SignupPage = () => {
       } catch (error) {
         console.error('Signup failed:', error);
         if (error.response?.status === 409) {
-          setSignupError('Такой пользователь уже существует');
+          setSignupError(t('signup.errors.userExists'));
         } else {
-          setSignupError('Ошибка регистрации');
+          setSignupError(t('signup.errors.signupError'));
         }
         formik.setSubmitting(false);
       }
@@ -74,13 +76,13 @@ const SignupPage = () => {
                 />
               </div>
               <Form onSubmit={formik.handleSubmit} className="w-50">
-                <h1 className="text-center mb-4">Регистрация</h1>
+                <h1 className="text-center mb-4">{t('signup.title')}</h1>
                 <Form.Group className="mb-3" controlId="username">
-                  <Form.Label className="visually-hidden">Имя пользователя</Form.Label>
+                  <Form.Label className="visually-hidden">{t('signup.username')}</Form.Label>
                   <Form.Control
                     type="text"
                     name="username"
-                    placeholder="Имя пользователя"
+                    placeholder={t('signup.username')}
                     autoComplete="username"
                     value={formik.values.username}
                     onChange={formik.handleChange}
@@ -95,11 +97,11 @@ const SignupPage = () => {
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="password">
-                  <Form.Label className="visually-hidden">Пароль</Form.Label>
+                  <Form.Label className="visually-hidden">{t('signup.password')}</Form.Label>
                   <Form.Control
                     type="password"
                     name="password"
-                    placeholder="Пароль"
+                    placeholder={t('signup.password')}
                     autoComplete="new-password"
                     value={formik.values.password}
                     onChange={formik.handleChange}
@@ -113,11 +115,11 @@ const SignupPage = () => {
                 </Form.Group>
 
                 <Form.Group className="mb-4" controlId="confirmPassword">
-                  <Form.Label className="visually-hidden">Подтвердите пароль</Form.Label>
+                  <Form.Label className="visually-hidden">{t('signup.confirmPassword')}</Form.Label>
                   <Form.Control
                     type="password"
                     name="confirmPassword"
-                    placeholder="Подтвердите пароль"
+                    placeholder={t('signup.confirmPassword')}
                     autoComplete="new-password"
                     value={formik.values.confirmPassword}
                     onChange={formik.handleChange}
@@ -141,14 +143,14 @@ const SignupPage = () => {
                   className="w-100"
                   disabled={formik.isSubmitting}
                 >
-                  Зарегистрироваться
+                  {t('signup.submit')}
                 </Button>
               </Form>
             </Card.Body>
             <Card.Footer className="p-4">
               <div className="text-center">
-                <span>Уже есть аккаунт? </span>
-                <Link to="/login">Войти</Link>
+                <span>{t('signup.hasAccount')} </span>
+                <Link to="/login">{t('signup.login')}</Link>
               </div>
             </Card.Footer>
           </Card>

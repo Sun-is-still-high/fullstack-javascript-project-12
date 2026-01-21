@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { Modal, Form, Button } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -8,6 +9,7 @@ import { renameChannel } from '../../store/slices/channelsSlice';
 import { updateChannel } from '../../services/api';
 
 const RenameChannelModal = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const inputRef = useRef(null);
   const { isOpen, extra } = useSelector((state) => state.modals);
@@ -20,10 +22,10 @@ const RenameChannelModal = () => {
   const validationSchema = yup.object({
     name: yup
       .string()
-      .min(3, 'От 3 до 20 символов')
-      .max(20, 'От 3 до 20 символов')
-      .notOneOf(channelNames, 'Должно быть уникальным')
-      .required('Обязательное поле'),
+      .min(3, t('validation.usernameLength'))
+      .max(20, t('validation.usernameLength'))
+      .notOneOf(channelNames, t('validation.unique'))
+      .required(t('validation.required')),
   });
 
   const formik = useFormik({
@@ -40,7 +42,7 @@ const RenameChannelModal = () => {
         dispatch(closeModal());
       } catch (error) {
         console.error('Failed to rename channel:', error);
-        formik.setErrors({ name: 'Ошибка переименования канала' });
+        formik.setErrors({ name: t('modals.rename.error') });
       }
     },
   });
@@ -58,7 +60,7 @@ const RenameChannelModal = () => {
   return (
     <Modal show={isOpen} onHide={handleClose} centered>
       <Modal.Header closeButton>
-        <Modal.Title>Переименовать канал</Modal.Title>
+        <Modal.Title>{t('modals.rename.title')}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={formik.handleSubmit}>
@@ -83,14 +85,14 @@ const RenameChannelModal = () => {
               className="me-2"
               disabled={formik.isSubmitting}
             >
-              Отменить
+              {t('modals.rename.cancel')}
             </Button>
             <Button
               variant="primary"
               type="submit"
               disabled={formik.isSubmitting}
             >
-              Отправить
+              {t('modals.rename.submit')}
             </Button>
           </div>
         </Form>

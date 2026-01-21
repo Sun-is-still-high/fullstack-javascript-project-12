@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { Form, InputGroup, Button, Toast, ToastContainer } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import { sendMessage } from '../services/api';
@@ -7,6 +8,7 @@ import { addMessage } from '../store/slices/messagesSlice';
 import { useAuth } from '../contexts/AuthContext';
 
 const MessageForm = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const auth = useAuth();
   const { currentChannelId } = useSelector((state) => state.channels);
@@ -41,11 +43,11 @@ const MessageForm = () => {
         console.error('Failed to send message:', error);
 
         if (error.response) {
-          setErrorMessage(`Ошибка отправки: ${error.response.status}`);
+          setErrorMessage(t('messages.errors.statusError', { status: error.response.status }));
         } else if (error.request) {
-          setErrorMessage('Сеть недоступна. Проверьте подключение к интернету.');
+          setErrorMessage(t('messages.errors.networkError'));
         } else {
-          setErrorMessage('Не удалось отправить сообщение');
+          setErrorMessage(t('messages.errors.genericError'));
         }
 
         setShowError(true);
@@ -62,8 +64,8 @@ const MessageForm = () => {
           <Form.Control
             ref={inputRef}
             name="body"
-            aria-label="Новое сообщение"
-            placeholder="Введите сообщение..."
+            aria-label={t('messages.newMessage')}
+            placeholder={t('messages.enterMessage')}
             className="border-0 p-0 ps-2"
             value={formik.values.body}
             onChange={formik.handleChange}
@@ -87,7 +89,7 @@ const MessageForm = () => {
                 d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm4.5 5.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"
               />
             </svg>
-            <span className="visually-hidden">Отправить</span>
+            <span className="visually-hidden">{t('messages.send')}</span>
           </Button>
         </InputGroup>
       </Form>
@@ -101,7 +103,7 @@ const MessageForm = () => {
           bg="danger"
         >
           <Toast.Header>
-            <strong className="me-auto">Ошибка</strong>
+            <strong className="me-auto">{t('messages.errors.sendError')}</strong>
           </Toast.Header>
           <Toast.Body className="text-white">{errorMessage}</Toast.Body>
         </Toast>

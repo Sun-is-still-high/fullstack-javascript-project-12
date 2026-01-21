@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useFormik } from 'formik';
 import { useNavigate, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { Form, Button, Card, Container, Row, Col, Alert } from 'react-bootstrap';
 import { useAuth } from '../contexts/AuthContext';
 import Header from '../components/Header';
 
 const LoginPage = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const auth = useAuth();
   const [authError, setAuthError] = useState(null);
@@ -31,9 +33,9 @@ const LoginPage = () => {
         navigate('/');
       } catch (error) {
         if (error.response?.status === 401) {
-          setAuthError('Неверные имя пользователя или пароль');
+          setAuthError(t('login.errors.invalidCredentials'));
         } else {
-          setAuthError('Произошла ошибка. Попробуйте еще раз');
+          setAuthError(t('login.errors.networkError'));
         }
         console.error('Login error:', error);
       }
@@ -48,14 +50,14 @@ const LoginPage = () => {
         <Col xs={12} md={8} lg={6} xxl={4}>
           <Card className="shadow-sm">
             <Card.Body className="p-5">
-              <h1 className="text-center mb-4">Войти</h1>
+              <h1 className="text-center mb-4">{t('login.title')}</h1>
               <Form onSubmit={formik.handleSubmit}>
                 <Form.Group className="mb-3" controlId="username">
-                  <Form.Label>Ваш ник</Form.Label>
+                  <Form.Label>{t('login.username')}</Form.Label>
                   <Form.Control
                     type="text"
                     name="username"
-                    placeholder="Введите ваш ник"
+                    placeholder={t('login.username')}
                     onChange={formik.handleChange}
                     value={formik.values.username}
                     isInvalid={!!authError}
@@ -64,11 +66,11 @@ const LoginPage = () => {
                   />
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="password">
-                  <Form.Label>Пароль</Form.Label>
+                  <Form.Label>{t('login.password')}</Form.Label>
                   <Form.Control
                     type="password"
                     name="password"
-                    placeholder="Введите пароль"
+                    placeholder={t('login.password')}
                     onChange={formik.handleChange}
                     value={formik.values.password}
                     isInvalid={!!authError}
@@ -91,14 +93,14 @@ const LoginPage = () => {
                   className="w-100"
                   disabled={formik.isSubmitting}
                 >
-                  {formik.isSubmitting ? 'Вход...' : 'Войти'}
+                  {formik.isSubmitting ? t('login.submitting') : t('login.submit')}
                 </Button>
               </Form>
             </Card.Body>
             <Card.Footer className="p-4">
               <div className="text-center">
-                <span>Нет аккаунта? </span>
-                <Link to="/signup">Регистрация</Link>
+                <span>{t('login.noAccount')} </span>
+                <Link to="/signup">{t('login.signup')}</Link>
               </div>
             </Card.Footer>
           </Card>
