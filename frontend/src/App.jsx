@@ -10,6 +10,8 @@ import SignupPage from './pages/SignupPage';
 import NotFoundPage from './pages/NotFoundPage';
 import store from './store';
 
+const AUTOCLOSE_TIMER = 5000;
+
 function App() {
   return (
     <Provider store={store}>
@@ -30,7 +32,7 @@ function App() {
           </Routes>
           <ToastContainer
             position="top-right"
-            autoClose={5000}
+            autoClose={AUTOCLOSE_TIMER}
             hideProgressBar={false}
             newestOnTop={false}
             closeOnClick
