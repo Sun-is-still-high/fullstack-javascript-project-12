@@ -1,4 +1,4 @@
-import Rollbar from 'rollbar';
+import Rollbar from 'rollbar'
 
 const rollbarConfig = {
   accessToken: import.meta.env.VITE_ROLLBAR_ACCESS_TOKEN,
@@ -13,8 +13,8 @@ const rollbarConfig = {
       },
     },
   },
-};
+}
 
-const rollbar = new Rollbar(rollbarConfig);
+const rollbar = new Rollbar(rollbarConfig)
 
-export default rollbar;
+export default rollbar

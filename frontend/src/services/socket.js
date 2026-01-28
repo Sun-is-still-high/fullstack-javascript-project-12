@@ -1,26 +1,26 @@
-import io from 'socket.io-client';
+import io from 'socket.io-client'
 
-let socket = null;
+let socket = null
 
 export const initSocket = () => {
   if (!socket) {
-    socket = io();
+    socket = io()
   }
-  return socket;
-};
+  return socket
+}
 
 export const getSocket = () => {
   if (!socket) {
-    throw new Error('Socket not initialized. Call initSocket first.');
+    throw new Error('Socket not initialized. Call initSocket first.')
   }
-  return socket;
-};
+  return socket
+}
 
 export const disconnectSocket = () => {
   if (socket) {
-    socket.disconnect();
-    socket = null;
+    socket.disconnect()
+    socket = null
   }
-};
+}
 
-export default { initSocket, getSocket, disconnectSocket };
+export default { initSocket, getSocket, disconnectSocket }
