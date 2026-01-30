@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: fullstack-chat-app
+    runtime: node
+    plan: free
+    buildCommand: npm install && cd frontend && npm install && npm run build && cd ..
+    startCommand: npx start-server -s ./frontend/dist
+    envVars:
+      - key: NODE_VERSION
+        value: 20.11.0
