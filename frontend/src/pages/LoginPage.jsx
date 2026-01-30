@@ -3,7 +3,7 @@ import { useFormik } from 'formik';
 import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
-import { Form, Button, Card, Container, Row, Col, Alert } from 'react-bootstrap';
+import { Form, Button, Card, Container, Row, Col } from 'react-bootstrap';
 import { useAuth } from '../contexts/AuthContext';
 import Header from '../components/Header';
 
@@ -82,11 +82,6 @@ const LoginPage = () => {
                     </Form.Control.Feedback>
                   )}
                 </Form.Group>
-                {authError && (
-                  <Alert variant="danger" className="mb-3">
-                    {authError}
-                  </Alert>
-                )}
                 <Button
                   type="submit"
                   variant="primary"
