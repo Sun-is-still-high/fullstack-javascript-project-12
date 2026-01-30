@@ -3,7 +3,7 @@ services:
     name: fullstack-chat-app
     runtime: node
     plan: free
-    buildCommand: npm install && cd frontend && npm install && npm run build && cd ..
+    buildCommand: npm run build
     startCommand: npm start
     envVars:
       - key: NODE_VERSION
