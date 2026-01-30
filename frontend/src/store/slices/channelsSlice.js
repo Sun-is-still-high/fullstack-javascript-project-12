@@ -13,7 +13,10 @@ const channelsSlice = createSlice({
       state.channels = action.payload
     },
     addChannel: (state, action) => {
-      state.channels.push(action.payload)
+      const exists = state.channels.some(ch => ch.id === action.payload.id)
+      if (!exists) {
+        state.channels.push(action.payload)
+      }
     },
     removeChannel: (state, action) => {
       state.channels = state.channels.filter(channel => channel.id !== action.payload)
