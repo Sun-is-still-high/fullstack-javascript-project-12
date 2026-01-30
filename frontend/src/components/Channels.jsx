@@ -64,8 +64,7 @@ const Channels = () => {
                 onClick={() => handleChannelClick(channel.id)}
                 aria-label={channel.name}
               >
-                <span className="me-1" aria-hidden="true">#</span>
-                {channel.name}
+               {channel.name}
               </Button>
               {channel.removable && (
                 <>
