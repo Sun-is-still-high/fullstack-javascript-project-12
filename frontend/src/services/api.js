@@ -27,8 +27,15 @@ export const setAuthToken = (token) => {
 }
 
 export const fetchInitialData = async () => {
-  const response = await api.get('/data')
-  return response.data
+  const [channelsResponse, messagesResponse] = await Promise.all([
+    api.get('/channels'),
+    api.get('/messages'),
+  ])
+  return {
+    channels: channelsResponse.data,
+    messages: messagesResponse.data,
+    currentChannelId: channelsResponse.data[0]?.id,
+  }
 }
 
 export const sendMessage = async (message) => {
