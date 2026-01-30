@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "cd frontend && npx vite build",
+    "build": "cd frontend && npm install && npm run build",
     "start": "npx start-server -s ./frontend/dist"
   },
   "repository": {
@@ -16,6 +16,9 @@
   "author": "",
   "license": "ISC",
   "type": "commonjs",
+  "engines": {
+    "node": "20.x"
+  },
   "bugs": {
     "url": "https://github.com/Sun-is-still-high/fullstack-javascript-project-12/issues"
   },
