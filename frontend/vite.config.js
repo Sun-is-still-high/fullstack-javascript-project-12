@@ -7,8 +7,13 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: `http://${process.env.APP_IP}:${process.env.APP_PORT}`,
+        target: 'http://localhost:5001',
         changeOrigin: true,
+      },
+      '/socket.io': {
+        target: 'http://localhost:5001',
+        changeOrigin: true,
+        ws: true,
       },
     },
   },
