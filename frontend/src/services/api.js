@@ -14,7 +14,7 @@ api.interceptors.response.use(
       status: error.response?.status,
     })
     return Promise.reject(error)
-  }
+  },
 )
 
 export const setAuthToken = (token) => {

@@ -9,7 +9,7 @@ const Messages = () => {
   const { currentChannelId } = useSelector(state => state.channels)
 
   const currentMessages = messages.filter(
-    message => message.channelId === currentChannelId
+    message => message.channelId === currentChannelId,
   )
 
   useEffect(() => {
@@ -18,15 +18,19 @@ const Messages = () => {
 
   return (
     <div id="messages-box" className="chat-messages overflow-auto px-5">
-      {currentMessages.length === 0 ? (
-        <div className="text-muted">{t('chat.noMessages')}</div>
-      ) : (
-        currentMessages.map(message => (
-          <div key={message.id} className="text-break mb-2">
-            <b>{message.username}</b>: {message.body}
-          </div>
-        ))
-      )}
+      {currentMessages.length === 0
+        ? (
+          <div className="text-muted">{t('chat.noMessages')}</div>
+        )
+        : (
+          currentMessages.map(message => (
+            <div key={message.id} className="text-break mb-2">
+              <b>{message.username}</b>
+              :
+              {message.body}
+            </div>
+          ))
+        )}
       <div ref={messagesEndRef} />
     </div>
   )

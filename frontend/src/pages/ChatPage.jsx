@@ -49,7 +49,7 @@ const ChatPage = () => {
         console.error('Error details:', {
           message: err.message,
           response: err.response?.data,
-          status: err.response?.status
+          status: err.response?.status,
         })
         setError(t('chat.loadError'))
         toast.error(t('notifications.dataLoadError'))
@@ -130,7 +130,10 @@ const ChatPage = () => {
             <div className="d-flex flex-column h-100">
               <div className="bg-light mb-4 p-3 shadow-sm small">
                 <p className="m-0">
-                  <b># {currentChannel?.name || t('chat.selectChannel')}</b>
+                  <b>
+                    #
+                    {currentChannel?.name || t('chat.selectChannel')}
+                  </b>
                 </p>
                 <span className="text-muted">
                   {currentChannel ? t('chat.channelDescription') : ''}

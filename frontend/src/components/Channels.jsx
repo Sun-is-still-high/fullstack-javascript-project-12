@@ -20,14 +20,14 @@ const Channels = () => {
   const handleRename = (channel) => {
     dispatch(openModal({
       type: 'renameChannel',
-      extra: { id: channel.id, name: channel.name }
+      extra: { id: channel.id, name: channel.name },
     }))
   }
 
   const handleRemove = (channel) => {
     dispatch(openModal({
       type: 'removeChannel',
-      extra: { id: channel.id }
+      extra: { id: channel.id },
     }))
   }
 
