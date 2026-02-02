@@ -12,7 +12,10 @@ const messagesSlice = createSlice({
       state.messages = action.payload
     },
     addMessage: (state, action) => {
-      state.messages.push(action.payload)
+      const exists = state.messages.some(msg => msg.id === action.payload.id)
+      if (!exists) {
+        state.messages.push(action.payload)
+      }
     },
     removeChannelMessages: (state, action) => {
       state.messages = state.messages.filter(
