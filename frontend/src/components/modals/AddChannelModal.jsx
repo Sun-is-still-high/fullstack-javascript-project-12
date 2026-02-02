@@ -67,7 +67,7 @@ const AddChannelModal = () => {
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={formik.handleSubmit}>
-          <Form.Group>
+          <Form.Group controlId="name">
             <Form.Label>{t('modals.add.placeholder')}</Form.Label>
             <Form.Control
               ref={inputRef}
