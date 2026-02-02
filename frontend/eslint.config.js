@@ -5,6 +5,7 @@ import stylistic from '@stylistic/eslint-plugin'
 export default [
   js.configs.recommended,
   {
+    files: ['**/*.js', '**/*.jsx'],
     plugins: {
       '@stylistic': stylistic,
     },
@@ -12,6 +13,13 @@ export default [
       globals: {
         ...globals.browser,
         ...globals.node,
+      },
+      parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+        ecmaFeatures: {
+          jsx: true,
+        },
       },
     },
     rules: {

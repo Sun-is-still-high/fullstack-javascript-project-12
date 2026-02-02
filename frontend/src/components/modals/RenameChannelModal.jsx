@@ -1,25 +1,25 @@
-import { useEffect, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useTranslation } from 'react-i18next';
-import { toast } from 'react-toastify';
-import { Modal, Form, Button } from 'react-bootstrap';
-import { useFormik } from 'formik';
-import * as yup from 'yup';
-import filter from 'leo-profanity';
-import { closeModal } from '../../store/slices/modalsSlice';
-import { renameChannel } from '../../store/slices/channelsSlice';
-import { updateChannel } from '../../services/api';
+import { useEffect, useRef } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { useTranslation } from 'react-i18next'
+import { toast } from 'react-toastify'
+import { Modal, Form, Button } from 'react-bootstrap'
+import { useFormik } from 'formik'
+import * as yup from 'yup'
+import filter from 'leo-profanity'
+import { closeModal } from '../../store/slices/modalsSlice'
+import { renameChannel } from '../../store/slices/channelsSlice'
+import { updateChannel } from '../../services/api'
 
 const RenameChannelModal = () => {
-  const { t } = useTranslation();
-  const dispatch = useDispatch();
-  const inputRef = useRef(null);
-  const { isOpen, extra } = useSelector((state) => state.modals);
-  const { channels } = useSelector((state) => state.channels);
+  const { t } = useTranslation()
+  const dispatch = useDispatch()
+  const inputRef = useRef(null)
+  const { isOpen, extra } = useSelector(state => state.modals)
+  const { channels } = useSelector(state => state.channels)
 
   const channelNames = channels
-    .filter((ch) => ch.id !== extra?.id)
-    .map((ch) => ch.name);
+    .filter(ch => ch.id !== extra?.id)
+    .map(ch => ch.name)
 
   const validationSchema = yup.object({
     name: yup
@@ -28,7 +28,7 @@ const RenameChannelModal = () => {
       .max(20, t('validation.usernameLength'))
       .notOneOf(channelNames, t('validation.unique'))
       .required(t('validation.required')),
-  });
+  })
 
   const formik = useFormik({
     initialValues: {
@@ -38,29 +38,30 @@ const RenameChannelModal = () => {
     validationSchema,
     onSubmit: async (values) => {
       try {
-        const cleanName = filter.clean(values.name);
-        await updateChannel(extra.id, { name: cleanName });
-        console.log('Channel renamed via API:', { id: extra.id, name: cleanName });
-        dispatch(renameChannel({ id: extra.id, name: cleanName }));
-        toast.success(t('notifications.channelRenamed'));
-        dispatch(closeModal());
-      } catch (error) {
-        console.error('Failed to rename channel:', error);
-        toast.error(t('notifications.networkError'));
-        formik.setErrors({ name: t('modals.rename.error') });
+        const cleanName = filter.clean(values.name)
+        await updateChannel(extra.id, { name: cleanName })
+        console.log('Channel renamed via API:', { id: extra.id, name: cleanName })
+        dispatch(renameChannel({ id: extra.id, name: cleanName }))
+        toast.success(t('notifications.channelRenamed'))
+        dispatch(closeModal())
+      }
+      catch (error) {
+        console.error('Failed to rename channel:', error)
+        toast.error(t('notifications.networkError'))
+        formik.setErrors({ name: t('modals.rename.error') })
       }
     },
-  });
+  })
 
   useEffect(() => {
     if (isOpen) {
-      inputRef.current?.select();
+      inputRef.current?.select()
     }
-  }, [isOpen]);
+  }, [isOpen])
 
   const handleClose = () => {
-    dispatch(closeModal());
-  };
+    dispatch(closeModal())
+  }
 
   return (
     <Modal show={isOpen} onHide={handleClose} centered>
@@ -104,7 +105,7 @@ const RenameChannelModal = () => {
         </Form>
       </Modal.Body>
     </Modal>
-  );
-};
+  )
+}
 
-export default RenameChannelModal;
+export default RenameChannelModal

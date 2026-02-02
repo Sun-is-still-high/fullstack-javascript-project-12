@@ -1,98 +1,99 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { useTranslation } from 'react-i18next';
-import { toast } from 'react-toastify';
-import { Container, Row, Col, Spinner, Button } from 'react-bootstrap';
-import { useAuth } from '../contexts/AuthContext';
-import { setChannels, setCurrentChannel, addChannel, removeChannel, renameChannel } from '../store/slices/channelsSlice';
-import { setMessages, addMessage } from '../store/slices/messagesSlice';
-import { fetchInitialData, setAuthToken } from '../services/api';
-import { initSocket, disconnectSocket } from '../services/socket';
-import Header from '../components/Header';
-import Channels from '../components/Channels';
-import Messages from '../components/Messages';
-import MessageForm from '../components/MessageForm';
-import ModalManager from '../components/ModalManager';
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { useTranslation } from 'react-i18next'
+import { toast } from 'react-toastify'
+import { Container, Row, Col, Spinner, Button } from 'react-bootstrap'
+import { useAuth } from '../contexts/AuthContext'
+import { setChannels, setCurrentChannel, addChannel, removeChannel, renameChannel } from '../store/slices/channelsSlice'
+import { setMessages, addMessage } from '../store/slices/messagesSlice'
+import { fetchInitialData, setAuthToken } from '../services/api'
+import { initSocket, disconnectSocket } from '../services/socket'
+import Header from '../components/Header'
+import Channels from '../components/Channels'
+import Messages from '../components/Messages'
+import MessageForm from '../components/MessageForm'
+import ModalManager from '../components/ModalManager'
 
 const ChatPage = () => {
-  const { t } = useTranslation();
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const auth = useAuth();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { t } = useTranslation()
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const auth = useAuth()
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
-  const { channels = [], currentChannelId } = useSelector((state) => state.channels);
-  const currentChannel = channels.find((ch) => ch.id === currentChannelId);
+  const { channels = [], currentChannelId } = useSelector(state => state.channels)
+  const currentChannel = channels.find(ch => ch.id === currentChannelId)
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        setAuthToken(auth.user.token);
-        const data = await fetchInitialData();
+        setAuthToken(auth.user.token)
+        const data = await fetchInitialData()
 
-        const channels = data.channels || [];
-        const messages = data.messages || [];
+        const channels = data.channels || []
+        const messages = data.messages || []
 
-        dispatch(setChannels(channels));
-        dispatch(setMessages(messages));
+        dispatch(setChannels(channels))
+        dispatch(setMessages(messages))
 
         if (channels.length > 0) {
-          dispatch(setCurrentChannel(data.currentChannelId || channels[0].id));
+          dispatch(setCurrentChannel(data.currentChannelId || channels[0].id))
         }
 
-        setLoading(false);
-      } catch (err) {
-        console.error('Failed to load data:', err);
+        setLoading(false)
+      }
+      catch (err) {
+        console.error('Failed to load data:', err)
         console.error('Error details:', {
           message: err.message,
           response: err.response?.data,
           status: err.response?.status
-        });
-        setError(t('chat.loadError'));
-        toast.error(t('notifications.dataLoadError'));
-        setLoading(false);
+        })
+        setError(t('chat.loadError'))
+        toast.error(t('notifications.dataLoadError'))
+        setLoading(false)
 
         if (err.response?.status === 401) {
-          auth.logOut();
-          navigate('/login');
+          auth.logOut()
+          navigate('/login')
         }
       }
-    };
+    }
 
-    loadData();
-  }, [auth, dispatch, navigate]);
+    loadData()
+  }, [auth, dispatch, navigate])
 
   useEffect(() => {
-    if (loading) return;
+    if (loading) return
 
-    const socket = initSocket();
+    const socket = initSocket()
 
     socket.on('newMessage', (message) => {
-      console.log('WebSocket: newMessage received:', message);
-      dispatch(addMessage(message));
-    });
+      console.log('WebSocket: newMessage received:', message)
+      dispatch(addMessage(message))
+    })
 
     socket.on('newChannel', (channel) => {
-      console.log('WebSocket: newChannel received:', channel);
-      dispatch(addChannel(channel));
-    });
+      console.log('WebSocket: newChannel received:', channel)
+      dispatch(addChannel(channel))
+    })
 
     socket.on('removeChannel', ({ id }) => {
-      console.log('WebSocket: removeChannel received:', id);
-      dispatch(removeChannel(id));
-    });
+      console.log('WebSocket: removeChannel received:', id)
+      dispatch(removeChannel(id))
+    })
 
     socket.on('renameChannel', ({ id, name }) => {
-      console.log('WebSocket: renameChannel received:', { id, name });
-      dispatch(renameChannel({ id, name }));
-    });
+      console.log('WebSocket: renameChannel received:', { id, name })
+      dispatch(renameChannel({ id, name }))
+    })
 
     return () => {
-      disconnectSocket();
-    };
-  }, [loading, dispatch]);
+      disconnectSocket()
+    }
+  }, [loading, dispatch])
 
   if (loading) {
     return (
@@ -101,7 +102,7 @@ const ChatPage = () => {
           <span className="visually-hidden">{t('chat.loading')}</span>
         </Spinner>
       </div>
-    );
+    )
   }
 
   if (error) {
@@ -114,7 +115,7 @@ const ChatPage = () => {
           </Button>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -145,7 +146,7 @@ const ChatPage = () => {
       </Container>
       <ModalManager />
     </div>
-  );
-};
+  )
+}
 
-export default ChatPage;
+export default ChatPage

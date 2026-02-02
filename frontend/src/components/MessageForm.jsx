@@ -1,58 +1,62 @@
-import { useState, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useTranslation } from 'react-i18next';
-import { toast } from 'react-toastify';
-import { Form, InputGroup, Button } from 'react-bootstrap';
-import { useFormik } from 'formik';
-import filter from 'leo-profanity';
-import { sendMessage } from '../services/api';
-import { addMessage } from '../store/slices/messagesSlice';
-import { useAuth } from '../contexts/AuthContext';
+import { useState, useRef } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { useTranslation } from 'react-i18next'
+import { toast } from 'react-toastify'
+import { Form, InputGroup, Button } from 'react-bootstrap'
+import { useFormik } from 'formik'
+import filter from 'leo-profanity'
+import { sendMessage } from '../services/api'
+import { addMessage } from '../store/slices/messagesSlice'
+import { useAuth } from '../contexts/AuthContext'
 
 const MessageForm = () => {
-  const { t } = useTranslation();
-  const dispatch = useDispatch();
-  const auth = useAuth();
-  const { currentChannelId } = useSelector((state) => state.channels);
-  const [sending, setSending] = useState(false);
-  const inputRef = useRef(null);
+  const { t } = useTranslation()
+  const dispatch = useDispatch()
+  const auth = useAuth()
+  const { currentChannelId } = useSelector(state => state.channels)
+  const [sending, setSending] = useState(false)
+  const inputRef = useRef(null)
 
   const formik = useFormik({
     initialValues: {
       body: '',
     },
     onSubmit: async (values, { resetForm }) => {
-      if (!values.body.trim() || !currentChannelId) return;
+      if (!values.body.trim() || !currentChannelId) return
 
-      setSending(true);
+      setSending(true)
 
       try {
         const message = {
           body: filter.clean(values.body),
           channelId: currentChannelId,
           username: auth.user.username,
-        };
+        }
 
-        const sentMessage = await sendMessage(message);
-        console.log('Message sent via API:', sentMessage);
-        dispatch(addMessage(sentMessage));
-        resetForm();
-        inputRef.current?.focus();
-      } catch (error) {
-        console.error('Failed to send message:', error);
+        const sentMessage = await sendMessage(message)
+        console.log('Message sent via API:', sentMessage)
+        dispatch(addMessage(sentMessage))
+        resetForm()
+        inputRef.current?.focus()
+      }
+      catch (error) {
+        console.error('Failed to send message:', error)
 
         if (error.response) {
-          toast.error(t('messages.errors.statusError', { status: error.response.status }));
-        } else if (error.request) {
-          toast.error(t('messages.errors.networkError'));
-        } else {
-          toast.error(t('messages.errors.genericError'));
+          toast.error(t('messages.errors.statusError', { status: error.response.status }))
         }
-      } finally {
-        setSending(false);
+        else if (error.request) {
+          toast.error(t('messages.errors.networkError'))
+        }
+        else {
+          toast.error(t('messages.errors.genericError'))
+        }
+      }
+      finally {
+        setSending(false)
       }
     },
-  });
+  })
 
   return (
     <>
@@ -91,7 +95,7 @@ const MessageForm = () => {
         </InputGroup>
       </Form>
     </>
-  );
-};
+  )
+}
 
-export default MessageForm;
+export default MessageForm

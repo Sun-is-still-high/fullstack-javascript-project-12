@@ -1,35 +1,35 @@
-import { useSelector, useDispatch } from 'react-redux';
-import { useTranslation } from 'react-i18next';
-import { Nav, Button, ButtonGroup, Dropdown } from 'react-bootstrap';
-import { setCurrentChannel } from '../store/slices/channelsSlice';
-import { openModal } from '../store/slices/modalsSlice';
+import { useSelector, useDispatch } from 'react-redux'
+import { useTranslation } from 'react-i18next'
+import { Nav, Button, ButtonGroup, Dropdown } from 'react-bootstrap'
+import { setCurrentChannel } from '../store/slices/channelsSlice'
+import { openModal } from '../store/slices/modalsSlice'
 
 const Channels = () => {
-  const { t } = useTranslation();
-  const dispatch = useDispatch();
-  const { channels, currentChannelId } = useSelector((state) => state.channels);
+  const { t } = useTranslation()
+  const dispatch = useDispatch()
+  const { channels, currentChannelId } = useSelector(state => state.channels)
 
   const handleChannelClick = (channelId) => {
-    dispatch(setCurrentChannel(channelId));
-  };
+    dispatch(setCurrentChannel(channelId))
+  }
 
   const handleAddChannel = () => {
-    dispatch(openModal({ type: 'addChannel' }));
-  };
+    dispatch(openModal({ type: 'addChannel' }))
+  }
 
   const handleRename = (channel) => {
     dispatch(openModal({
       type: 'renameChannel',
       extra: { id: channel.id, name: channel.name }
-    }));
-  };
+    }))
+  }
 
   const handleRemove = (channel) => {
     dispatch(openModal({
       type: 'removeChannel',
       extra: { id: channel.id }
-    }));
-  };
+    }))
+  }
 
   return (
     <>
@@ -55,7 +55,7 @@ const Channels = () => {
         </Button>
       </div>
       <Nav variant="pills" className="flex-column px-2 mb-3 overflow-auto h-100 d-block">
-        {channels.map((channel) => (
+        {channels.map(channel => (
           <Nav.Item key={channel.id} className="w-100">
             <Dropdown as={ButtonGroup} className="d-flex">
               <Button
@@ -64,7 +64,7 @@ const Channels = () => {
                 onClick={() => handleChannelClick(channel.id)}
                 aria-label={channel.name}
               >
-               {channel.name}
+                {channel.name}
               </Button>
               {channel.removable && (
                 <>
@@ -90,7 +90,7 @@ const Channels = () => {
         ))}
       </Nav>
     </>
-  );
-};
+  )
+}
 
-export default Channels;
+export default Channels

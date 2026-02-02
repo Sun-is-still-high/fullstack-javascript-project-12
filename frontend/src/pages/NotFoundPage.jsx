@@ -1,9 +1,9 @@
-import { Link } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import Header from '../components/Header';
+import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import Header from '../components/Header'
 
 const NotFoundPage = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
   return (
     <div className="d-flex flex-column h-100">
@@ -17,7 +17,7 @@ const NotFoundPage = () => {
         </Link>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default NotFoundPage;
+export default NotFoundPage

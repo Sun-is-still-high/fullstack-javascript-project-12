@@ -1,16 +1,16 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { Provider } from 'react-redux';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { AuthProvider } from './contexts/AuthContext';
-import PrivateRoute from './components/PrivateRoute';
-import ChatPage from './pages/ChatPage';
-import LoginPage from './pages/LoginPage';
-import SignupPage from './pages/SignupPage';
-import NotFoundPage from './pages/NotFoundPage';
-import store from './store';
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { Provider } from 'react-redux'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import { AuthProvider } from './contexts/AuthContext'
+import PrivateRoute from './components/PrivateRoute'
+import ChatPage from './pages/ChatPage'
+import LoginPage from './pages/LoginPage'
+import SignupPage from './pages/SignupPage'
+import NotFoundPage from './pages/NotFoundPage'
+import store from './store'
 
-const AUTOCLOSE_TIMER = 5000;
+const AUTOCLOSE_TIMER = 5000
 
 function App() {
   return (
@@ -44,7 +44,7 @@ function App() {
         </BrowserRouter>
       </AuthProvider>
     </Provider>
-  );
+  )
 }
 
-export default App;
+export default App
