@@ -15,6 +15,13 @@ const rollbarConfig = {
   },
 }
 
-const rollbar = new Rollbar(rollbarConfig)
+let rollbarInstance = null
 
-export default rollbar
+export const initRollbar = () => {
+  if (!rollbarInstance) {
+    rollbarInstance = new Rollbar(rollbarConfig)
+  }
+  return rollbarInstance
+}
+
+export default rollbarInstance
