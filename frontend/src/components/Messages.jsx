@@ -1,12 +1,13 @@
 import { useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { useGetMessagesQuery } from '../store/api/messagesApi'
 
 const Messages = () => {
   const { t } = useTranslation()
   const messagesEndRef = useRef(null)
-  const { messages } = useSelector(state => state.messages)
-  const { currentChannelId } = useSelector(state => state.channels)
+  const { data: messages = [] } = useGetMessagesQuery()
+  const { currentChannelId } = useSelector(state => state.currentChannel)
 
   const currentMessages = messages.filter(
     message => message.channelId === currentChannelId,

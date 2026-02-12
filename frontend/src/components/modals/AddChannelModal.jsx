@@ -7,15 +7,16 @@ import { useFormik } from 'formik'
 import * as yup from 'yup'
 import filter from 'leo-profanity'
 import { closeModal } from '../../store/slices/modalsSlice'
-import { setCurrentChannel, addChannel } from '../../store/slices/channelsSlice'
-import { createChannel } from '../../services/api'
+import { setCurrentChannel } from '../../store/slices/channelsSlice'
+import { useGetChannelsQuery, useAddChannelMutation } from '../../store/api/channelsApi'
 
 const AddChannelModal = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const inputRef = useRef(null)
   const { isOpen } = useSelector(state => state.modals)
-  const { channels } = useSelector(state => state.channels)
+  const { data: channels = [] } = useGetChannelsQuery()
+  const [addChannel] = useAddChannelMutation()
 
   const channelNames = channels.map(ch => ch.name)
 
@@ -35,9 +36,7 @@ const AddChannelModal = () => {
     validationSchema,
     onSubmit: async (values) => {
       try {
-        const newChannel = await createChannel({ name: filter.clean(values.name) })
-        console.log('Channel created via API:', newChannel)
-        dispatch(addChannel(newChannel))
+        const newChannel = await addChannel({ name: filter.clean(values.name) }).unwrap()
         dispatch(setCurrentChannel(newChannel.id))
         toast.success(t('notifications.channelCreated'))
         dispatch(closeModal())

@@ -1,10 +1,11 @@
-import { Navigate } from 'react-router-dom'
+import { Navigate, Outlet } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
+import { appRoutes } from '../routes'
 
-const PrivateRoute = ({ children }) => {
+const PrivateRoute = () => {
   const auth = useAuth()
 
-  return auth.user ? children : <Navigate to="/login" />
+  return auth.user ? <Outlet /> : <Navigate to={appRoutes.login} />
 }
 
 export default PrivateRoute

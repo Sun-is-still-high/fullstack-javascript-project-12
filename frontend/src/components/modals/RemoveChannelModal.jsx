@@ -1,31 +1,25 @@
-import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'react-toastify'
 import { Modal, Button } from 'react-bootstrap'
 import { closeModal } from '../../store/slices/modalsSlice'
-import { removeChannel } from '../../store/slices/channelsSlice'
-import { deleteChannel } from '../../services/api'
+import { useRemoveChannelMutation } from '../../store/api/channelsApi'
 
 const RemoveChannelModal = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const { isOpen, extra } = useSelector(state => state.modals)
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [removeChannel, { isLoading: isSubmitting }] = useRemoveChannelMutation()
 
   const handleRemove = async () => {
-    setIsSubmitting(true)
     try {
-      await deleteChannel(extra.id)
-      console.log('Channel deleted via API:', extra.id)
-      dispatch(removeChannel(extra.id))
+      await removeChannel(extra.id).unwrap()
       toast.success(t('notifications.channelRemoved'))
       dispatch(closeModal())
     }
     catch (error) {
       console.error('Failed to delete channel:', error)
       toast.error(t('notifications.networkError'))
-      setIsSubmitting(false)
     }
   }
 

@@ -5,6 +5,14 @@ const api = axios.create({
   baseURL: '/api/v1',
 })
 
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token')
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
+  return config
+})
+
 api.interceptors.response.use(
   response => response,
   (error) => {
@@ -16,46 +24,5 @@ api.interceptors.response.use(
     return Promise.reject(error)
   },
 )
-
-export const setAuthToken = (token) => {
-  if (token) {
-    api.defaults.headers.common.Authorization = `Bearer ${token}`
-  }
-  else {
-    delete api.defaults.headers.common.Authorization
-  }
-}
-
-export const fetchInitialData = async () => {
-  const [channelsResponse, messagesResponse] = await Promise.all([
-    api.get('/channels'),
-    api.get('/messages'),
-  ])
-  return {
-    channels: channelsResponse.data,
-    messages: messagesResponse.data,
-    currentChannelId: channelsResponse.data[0]?.id,
-  }
-}
-
-export const sendMessage = async (message) => {
-  const response = await api.post('/messages', message)
-  return response.data
-}
-
-export const createChannel = async (channel) => {
-  const response = await api.post('/channels', channel)
-  return response.data
-}
-
-export const updateChannel = async (id, channel) => {
-  const response = await api.patch(`/channels/${id}`, channel)
-  return response.data
-}
-
-export const deleteChannel = async (id) => {
-  const response = await api.delete(`/channels/${id}`)
-  return response.data
-}
 
 export default api

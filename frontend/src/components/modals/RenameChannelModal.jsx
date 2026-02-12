@@ -7,15 +7,15 @@ import { useFormik } from 'formik'
 import * as yup from 'yup'
 import filter from 'leo-profanity'
 import { closeModal } from '../../store/slices/modalsSlice'
-import { renameChannel } from '../../store/slices/channelsSlice'
-import { updateChannel } from '../../services/api'
+import { useGetChannelsQuery, useRenameChannelMutation } from '../../store/api/channelsApi'
 
 const RenameChannelModal = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const inputRef = useRef(null)
   const { isOpen, extra } = useSelector(state => state.modals)
-  const { channels } = useSelector(state => state.channels)
+  const { data: channels = [] } = useGetChannelsQuery()
+  const [renameChannel] = useRenameChannelMutation()
 
   const channelNames = channels
     .filter(ch => ch.id !== extra?.id)
@@ -39,9 +39,7 @@ const RenameChannelModal = () => {
     onSubmit: async (values) => {
       try {
         const cleanName = filter.clean(values.name)
-        await updateChannel(extra.id, { name: cleanName })
-        console.log('Channel renamed via API:', { id: extra.id, name: cleanName })
-        dispatch(renameChannel({ id: extra.id, name: cleanName }))
+        await renameChannel({ id: extra.id, name: cleanName }).unwrap()
         toast.success(t('notifications.channelRenamed'))
         dispatch(closeModal())
       }
