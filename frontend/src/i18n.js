@@ -125,7 +125,6 @@ export const initI18n = () => {
         escapeValue: false,
       },
     })
-  
   return i18n
 }
 
