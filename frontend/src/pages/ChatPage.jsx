@@ -4,7 +4,6 @@ import { Container, Row, Col, Button } from 'react-bootstrap'
 import { useAuth } from '../contexts/AuthContext'
 import { useGetChannelsQuery } from '../store/api/channelsApi'
 import { useGetMessagesQuery } from '../store/api/messagesApi'
-import { initSocket, disconnectSocket } from '../services/socket'
 import ChannelHeader from '../components/ChannelHeader'
 import Channels from '../components/Channels'
 import Messages from '../components/Messages'
@@ -34,16 +33,6 @@ const ChatPage = () => {
       auth.logOut()
     }
   }, [channelsErr, auth])
-
-  useEffect(() => {
-    if (loading) return undefined
-
-    initSocket()
-
-    return () => {
-      disconnectSocket()
-    }
-  }, [loading])
 
   if (loading) {
     return <Loader />

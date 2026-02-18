@@ -1,15 +1,7 @@
-import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import { initI18n } from './i18n'
-import { initRollbar } from './rollbar'
-import App from './App.jsx'
+import init from './init'
 
-initI18n()
-initRollbar()
-
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-)
+init().then((app) => {
+  createRoot(document.getElementById('root')).render(app)
+})
