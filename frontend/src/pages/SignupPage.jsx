@@ -15,17 +15,17 @@ const SignupPage = () => {
   const validationSchema = yup.object({
     username: yup
       .string()
-      .min(3, t('validation.usernameLength'))
-      .max(20, t('validation.usernameLength'))
-      .required(t('validation.required')),
+      .min(3, 'validation.usernameLength')
+      .max(20, 'validation.usernameLength')
+      .required('validation.required'),
     password: yup
       .string()
-      .min(6, t('validation.passwordLength'))
-      .required(t('validation.required')),
+      .min(6, 'validation.passwordLength')
+      .required('validation.required'),
     confirmPassword: yup
       .string()
-      .oneOf([yup.ref('password'), null], t('validation.passwordsMustMatch'))
-      .required(t('validation.required')),
+      .oneOf([yup.ref('password'), null], 'validation.passwordsMustMatch')
+      .required('validation.required'),
   })
 
   const formik = useFormik({
@@ -87,7 +87,7 @@ const SignupPage = () => {
                     autoFocus
                   />
                   <Form.Control.Feedback type="invalid">
-                    {formik.errors.username}
+                    {t(formik.errors.username)}
                   </Form.Control.Feedback>
                 </Form.Group>
 
@@ -105,7 +105,7 @@ const SignupPage = () => {
                     disabled={formik.isSubmitting}
                   />
                   <Form.Control.Feedback type="invalid">
-                    {formik.errors.password}
+                    {t(formik.errors.password)}
                   </Form.Control.Feedback>
                 </Form.Group>
 
@@ -123,7 +123,7 @@ const SignupPage = () => {
                     disabled={formik.isSubmitting}
                   />
                   <Form.Control.Feedback type="invalid">
-                    {formik.errors.confirmPassword}
+                    {t(formik.errors.confirmPassword)}
                   </Form.Control.Feedback>
                   {signupError && (
                     <Form.Control.Feedback type="invalid" style={{ display: 'block' }}>
